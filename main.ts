@@ -1,7 +1,7 @@
 import { mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-// Tiny stack VM, ISA v1. Matches generator/subject/vm.mjs exactly:
+// Tiny stack VM, ISA v1. Follows generator/subject/vm.mjs exactly:
 // step limit 10, pc trap 9, bad opcode 5, underflow 2, overflow 3,
 // div-by-zero 4, memory 6, call depth 7, empty RET 8, output 11.
 function run(p: Uint8Array, q: Uint8Array): { o: Uint8Array; c: number } {
@@ -130,6 +130,7 @@ function run(p: Uint8Array, q: Uint8Array): { o: Uint8Array; c: number } {
         break;
       }
       case 80: {
+        // Decimal output, written digit by digit from the end (no string alloc).
         if (sp < 1) return end(2);
         const v = D[sp - 1];
         let x = v < 0 ? -v : v;
